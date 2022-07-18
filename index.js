@@ -8,7 +8,7 @@
 
 const http = require('http');
 
-const url = require('url')
+const { handleResReq } = require('./assets/handleResReq');
 
 const app = {};
 
@@ -23,23 +23,6 @@ app.createServer = () => {
     });
 }
 
-app.handleReqRes = (req, res) => {
-
-    const parsedURL = url.parse(req.url, true);
-
-    const path = parsedURL.pathname;
-
-    const trimmedPath = path.replace(/^\/+|\/+$/g, '');
-
-    const method = req.method.toLowerCase();
-
-    const queryString = parsedURL.query;
-
-    const headersObj = req.headers;
-
-    console.log(headersObj);
-
-    res.end('some message');
-}
+app.handleReqRes = handleResReq;
 
 app.createServer();
