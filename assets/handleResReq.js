@@ -6,6 +6,8 @@ const routes = require('./routes');
 
 const { notFoundHandler } = require('./../handlers/routeHandler/notFoundHandler');
 
+const { parseJSON } = require('./../assets/utilities');
+
 const handler = {};
 
 handler.handleResReq = (req, res) => {
@@ -45,6 +47,8 @@ handler.handleResReq = (req, res) => {
     req.on('end', () => {
         realData += decoder.end();
 
+        reqProps.body = parseJSON(realData);
+
         chosenHandler(reqProps, (statusCode, payload) => {
             statusCode = typeof statusCode === 'number' ? statusCode : 500;
             payload = typeof payload === 'object' ? payload : {};
@@ -53,6 +57,7 @@ handler.handleResReq = (req, res) => {
 
             console.log(payload.message);
 
+            res.setHeader('Content-Type', 'application/json')
             res.writeHead(statusCode);
             res.end(payloadString);
         });
