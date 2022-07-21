@@ -123,9 +123,83 @@ user._users.get = (reqProps, callback) => {
     }
 };
 
-user._users.put = (requestProperties, callback) => {
+user._users.put = (reqProps, callback) => {
 
+    const phone =
+        typeof reqProps.body.phone === 'string' &&
+            reqProps.body.phone.trim().length === 11
+            ? reqProps.body.phone
+            : false;
 
+    const firstName =
+        typeof reqProps.body.firstName === 'string' &&
+            reqProps.body.firstName.trim().length > 0
+            ? reqProps.body.firstName
+            : false;
+
+    const lastName =
+        typeof reqProps.body.lastName === 'string' &&
+            reqProps.body.lastName.trim().length > 0
+            ? reqProps.body.lastName
+            : false;
+
+    const password =
+        typeof reqProps.body.password === 'string' &&
+            reqProps.body.password.trim().length > 0
+            ? reqProps.body.password
+            : false;
+
+    // console.log(reqProps.body);
+
+    if (phone) {
+        if (firstName || lastName || password) {
+            // loopkup the user
+            data.read('users', phone, (err1, uData) => {
+                const userData = { ...parseJSON(uData) };
+
+                if (!err1 && userData) {
+                    if (firstName) {
+                        userData.firstName = firstName;
+                    }
+                    if (lastName) {
+                        userData.lastName = lastName;
+                    }
+                    if (password) {
+                        userData.password = hash(password);
+                    }
+
+                    // store to database
+                    data.update('users', phone, userData, (err2) => {
+
+                        console.log(userData);
+
+                        if (!err2) {
+
+                            callback(200, {
+                                message: 'User was updated successfully!',
+                            });
+                        } else {
+                            callback(500, {
+                                error: err2,
+                            });
+                        }
+                    });
+                } else {
+                    callback(400, {
+                        error: 'You have a problem in your request!',
+                    });
+                }
+            });
+        } else {
+            callback(400, {
+                error: 'You have a problem in your request!',
+            });
+        }
+    } else {
+        callback(400, {
+            error: 'Invalid phone number. Please try again!',
+        });
+    }
 };
 
 user._users.delete = (reqProps, callback) => {
