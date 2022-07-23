@@ -171,8 +171,6 @@ user._users.put = (reqProps, callback) => {
                     // store to database
                     data.update('users', phone, userData, (err2) => {
 
-                        console.log(userData);
-
                         if (!err2) {
 
                             callback(200, {
@@ -203,6 +201,40 @@ user._users.put = (reqProps, callback) => {
 };
 
 user._users.delete = (reqProps, callback) => {
+    const phone =
+        typeof (reqProps.queryString.phone) === 'string' &&
+            reqProps.queryString.phone.trim().length === 11
+            ? reqProps.queryString.phone
+            : false;
+
+    if (phone) {
+        data.read('users', phone, (err) => {
+            if (!err) {
+                data.delete('users', phone, (err) => {
+                    if (!err) {
+                        callback(200, {
+                            message: 'Successfully Deleted',
+                        })
+                    }
+                    else {
+                        callback(500, {
+                            message: 'An error occured! ' + err,
+                        })
+                    }
+                })
+            }
+            else {
+                callback(500, {
+                    message: "an error occured, " + err,
+                })
+            }
+        })
+    }
+    else {
+        callback(400, {
+            message: "User Not Found",
+        })
+    }
 
 };
 
