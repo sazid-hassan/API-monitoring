@@ -12,6 +12,7 @@ const handler = {};
 
 handler.handleResReq = (req, res) => {
 
+
     const parsedURL = url.parse(req.url, true);
 
     const path = parsedURL.pathname;
