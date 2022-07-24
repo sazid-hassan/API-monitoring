@@ -7,7 +7,6 @@
 
 const http = require('http');
 const environment = require('./assets/environments');
-const data = require('./lib/data')
 const { handleResReq } = require('./assets/handleResReq');
 
 const app = {};

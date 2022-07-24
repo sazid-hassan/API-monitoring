@@ -10,8 +10,6 @@ user.userHandler = (reqProps, callback) => {
 
     const acceptedMethods = ['get', 'post', 'put', 'delete'];
 
-    // console.log(reqProps.method);
-
     if (acceptedMethods.indexOf(reqProps.method) > -1) {
         user._users[reqProps.method](reqProps, callback);
     }
@@ -237,5 +235,7 @@ user._users.delete = (reqProps, callback) => {
     }
 
 };
+
+// console.log(user);
 
 module.exports = user;
